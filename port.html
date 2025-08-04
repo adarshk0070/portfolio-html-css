@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adarsh K - Portfolio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #00ff88;
+            --secondary: #1a1a2e;
+            --bg-dark: #0f0f23;
+            --bg-card: rgba(26, 26, 46, 0.9);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: #00ff88;
+            --border: rgba(0, 255, 136, 0.2);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Matrix Rain Background */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.1;
+        }
+        
+        /* Animated Grid Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        /* Terminal Cursor */
+        .cursor {
+            display: inline-block;
+            background: var(--accent);
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Terminal Style */
+        .terminal-header {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(0, 255, 136, 0.1);
+        }
+        
+        .terminal-bar {
+            background: var(--secondary);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .dot-red { background: #ff5f57; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #28ca42; }
+        
+        .terminal-title {
+            margin-left: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .terminal-content {
+            padding: 40px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .code-line {
+            margin: 8px 0;
+            opacity: 0;
+            animation: typeWriter 0.5s forwards;
+        }
+        
+        .code-line:nth-child(1) { animation-delay: 0.5s; }
+        .code-line:nth-child(2) { animation-delay: 1s; }
+        .code-line:nth-child(3) { animation-delay: 1.5s; }
+        .code-line:nth-child(4) { animation-delay: 2s; }
+        .code-line:nth-child(5) { animation-delay: 2.5s; }
+        .code-line:nth-child(6) { animation-delay: 3s; }
+        .code-line:nth-child(7) { animation-delay: 3.5s; }
+        
+        @keyframes typeWriter {
+            to { opacity: 1; }
+        }
+        
+        .syntax-comment { color: #6a9955; }
+        .syntax-string { color: #ce9178; }
+        .syntax-keyword { color: #569cd6; }
+        .syntax-variable { color: #9cdcfe; }
+        .syntax-function { color: #dcdcaa; }
+        
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 40px;
+            margin: 40px 0;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 40px;
+            height: fit-content;
+        }
+        
+        .nav-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            margin-bottom: 20px;
+        }
+        
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent), #0066cc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-menu li {
+            margin: 15px 0;
+        }
+        
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            display: block;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-menu a::before {
+            content: '> ';
+            color: var(--accent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .nav-menu a:hover::before,
+        .nav-menu a.active::before {
+            opacity: 1;
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent);
+            transform: translateX(10px);
+        }
+        
+        /* Content Cards */
+        .content-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            margin: 30px 0;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            animation: scanLine 3s infinite;
+        }
+        
+        @keyframes scanLine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .section-title {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        
+        /* Skills Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .skill-category {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .skill-category:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+        }
+        
+        .skill-category h3 {
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        
+        .skill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+        }
+        
+        .skill-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
+        
+        .skill-level {
+            display: flex;
+            gap: 3px;
+        }
+        
+        .skill-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(0, 255, 136, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .skill-dot.active {
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+        
+        /* Project Cards */
+        .project-card {
+            background: rgba(0, 255, 136, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 25px 0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), #0066cc);
+        }
+        
+        .project-card:hover {
+            transform: translateX(10px);
+            border-color: var(--accent);
+            box-shadow: -5px 10px 30px rgba(0, 255, 136, 0.15);
+        }
+        
+        .project-title {
+            color: var(--accent);
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .tech-tag {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+        
+        /* Code Block */
+        .code-block {
+            background: #1e1e1e;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 25px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            margin: 20px 0;
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        .code-block::before {
+            content: 'JavaScript';
+            position: absolute;
+            top: 8px;
+            right: 15px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        
+        /* Education & Experience Cards */
+        .timeline-item {
+            background: rgba(0, 255, 136, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            position: relative;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .timeline-item:hover {
+            transform: translateX(5px);
+            border-color: var(--accent);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.1);
+        }
+        
+        .timeline-title {
+            color: var(--accent);
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .timeline-subtitle {
+            color: var(--text-secondary);
+            font-size: 1em;
+            margin-bottom: 15px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* Contact Section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .contact-item {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .contact-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+            animation: rotate 8s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .contact-item:hover::before {
+            opacity: 1;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .contact-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+        }
+        
+        .contact-icon {
+            font-size: 2.5em;
+            color: var(--accent);
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .contact-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .contact-link:hover {
+            color: var(--accent);
+        }
+        
+        /* Interest Tags */
+        .interests-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .interest-tag {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .interest-tag:hover {
+            background: rgba(0, 255, 136, 0.2);
+            transform: scale(1.05);
+        }
+        
+        /* Languages List */
+        .languages-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .language-tag {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--text-primary);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .language-tag:hover {
+            background: rgba(0, 255, 136, 0.2);
+            transform: scale(1.05);
+        }
+        
+        /* Loading Animation */
+        .loading-text {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .dot-animation::after {
+            content: '';
+            animation: dots 2s infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+        
+        /* Header Styles */
+        .header-content {
+            padding: 40px;
+        }
+        
+        .header-title {
+            font-size: 3em;
+            color: var(--accent);
+            margin-bottom: 10px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .header-subtitle {
+            font-size: 1.5em;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+        
+        .header-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                position: static;
+                order: -1;
+            }
+            
+            .terminal-content {
+                padding: 20px;
+            }
+            
+            .content-section {
+                padding: 25px;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-title {
+                font-size: 2em;
+            }
+            
+            .header-subtitle {
+                font-size: 1.2em;
+            }
+            
+            .header-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix Background Canvas -->
+    <canvas id="matrix-canvas"></canvas>
+    
+    <div class="container">
+        <!-- Terminal Header -->
+        <header class="terminal-header">
+            <div class="terminal-bar">
+                <div class="terminal-dot dot-red"></div>
+                <div class="terminal-dot dot-yellow"></div>
+                <div class="terminal-dot dot-green"></div>
+                <div class="terminal-title">adarsh@portfolio:~</div>
+            </div>
+            <div class="terminal-content">
+                <div class="code-line"><span class="syntax-comment">// Full Stack Developer | MCA Graduate</span></div>
+                <div class="code-line"><span class="syntax-keyword">const</span> <span class="syntax-variable">adarsh</span> = {</div>
+                <div class="code-line">  skills: [<span class="syntax-string">'JavaScript'</span>, <span class="syntax-string">'React.js'</span>, <span class="syntax-string">'Node.js'</span>, <span class="syntax-string">'MongoDB'</span>],</div>
+                <div class="code-line">  education: <span class="syntax-string">'Master of Computer Applications'</span>,</div>
+                <div class="code-line">  location: <span class="syntax-string">'Bengaluru, India'</span>,</div>
+                <div class="code-line">  status: <span class="syntax-string">'Looking for opportunities'</span></div>
+                <div class="code-line">};</div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Sidebar Navigation -->
+            <aside class="sidebar">
+                <div class="nav-card">
+                    <div class="profile-img">AK</div>
+                    <ul class="nav-menu">
+                        <li><a href="#summary" class="active">About</a></li>
+                        <li><a href="#skills">Skills</a></li>
+                        <li><a href="#projects">Projects</a></li>
+                        <li><a href="#education">Education</a></li>
+                        <li><a href="#certifications">Certifications</a></li>
+                        <li><a href="#volunteering">Volunteering</a></li>
+                        <li><a href="#interests">Interests</a></li>
+                        <li><a href="#languages">Languages</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Main Content Sections -->
+            <div class="content-sections">
+                <!-- Summary Section -->
+                <section id="summary" class="content-section">
+                    <h2 class="section-title">$ cat about.txt</h2>
+                    <div class="summary-content">
+                        <p>An MCA graduate with strong knowledge of full-stack development including JavaScript, React.js, Node.js and Spring Boot. Eager to apply my skills in building responsive and scalable web applications as a Full Stack Developer. Motivated, quick to learn and adaptable with a commitment to contributing effectively to a development team.</p>
+                    </div>
+                </section>
+                
+                <!-- Skills Section -->
+                <section id="skills" class="content-section">
+                    <h2 class="section-title">$ ls -l ./skills/</h2>
+                    
+                    <div class="skills-grid">
+                        <div class="skill-category">
+                            <h3>Frontend Development</h3>
+                            <div class="skill-item">
+                                <span class="skill-name">HTML</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">CSS</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">JavaScript</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">React.js</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Bootstrap</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">TypeScript</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Tailwind CSS</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h3>Backend Development</h3>
+                            <div class="skill-item">
+                                <span class="skill-name">Node.js</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Express.js</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">PHP</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">REST APIs</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Spring Boot</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h3>Database Technologies</h3>
+                            <div class="skill-item">
+                                <span class="skill-name">MongoDB</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">MySQL</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">SQL</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h3>Programming Languages</h3>
+                            <div class="skill-item">
+                                <span class="skill-name">Java</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Python</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">C/C++</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot"></div>
+                                    <div class="skill-dot"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h3>Soft Skills</h3>
+                            <div class="skill-item">
+                                <span class="skill-name">Active Learner</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Team Player</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Effective Communication</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">Problem Solver</span>
+                                <div class="skill-level">
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                    <div class="skill-dot active"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Projects Section -->
+                <section id="projects" class="content-section">
+                    <h2 class="section-title">$ find ./projects -name "*.app"</h2>
+                    
+                    <div class="project-card">
+                        <div class="project-title">E-Commerce Web App</div>
+                        <p style="margin-bottom: 15px; color: var(--text-secondary);">March 2025</p>
+                        <p style="margin-bottom: 20px;">Built a full-stack e-commerce platform using React, Node.js, Express, and MongoDB. Implemented user authentication with JWT and role-based access control. Developed an admin dashboard and real-time cart functionality. Created secure REST APIs for product management, order processing, and user sessions.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">React.js</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">Express.js</span>
+                            <span class="tech-tag">MongoDB</span>
+                            <span class="tech-tag">JWT</span>
+                            <span class="tech-tag">REST APIs</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-title">Internet Banking System</div>
+                        <p style="margin-bottom: 15px; color: var(--text-secondary);">December 2024</p>
+                        <p style="margin-bottom: 20px;">Developed a secure Internet Banking System using PHP and MySQL with user authentication and role-based access. Designed customer, staff, and admin panels to manage accounts, transactions, and user profiles. Implemented core banking features like deposits, withdrawals, transfers, and real-time balance tracking. Integrated transaction history and financial reports, including printable statements and dashboard analytics.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">PHP</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">HTML/CSS</span>
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">Bootstrap</span>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Education Section -->
+                <section id="education" class="content-section">
+                    <h2 class="section-title">$ cat education.log</h2>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-title">Master of Computer Application (MCA)</div>
+                        <div class="timeline-subtitle">Christ Academy for Advanced Studies, Bengaluru</div>
+                        <p style="color: var(--text-secondary); margin-bottom: 10px;">February 2024 - Present | Full-Time</p>
+                        <p>Currently pursuing MCA with focus on advanced software development, data structures, algorithms, and modern web technologies. Actively participating in technical workshops and coding competitions.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-title">Bachelor of Computer Applications (BCA)</div>
+                        <div class="timeline-subtitle">Krupanidhi Group of Institutions, Bengaluru</div>
+                        <p style="color: var(--text-secondary); margin-bottom: 10px;">August 2020 - December 2023 | Full-Time</p>
+                        <p><strong>CGPA:</strong> 7.0/10.0</p>
+                        <p>Completed comprehensive program covering programming fundamentals, database management, web development, and software engineering principles. Built strong foundation in computer applications and software development.</p>
+                    </div>
+                </section>
+                
+                <!-- Certifications Section -->
+                <section id="certifications" class="content-section">
+                    <h2 class="section-title">$ ls ./certifications/</h2>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-title">Full-Stack Web Developer</div>
+                        <div class="timeline-subtitle">LinkedIn Learning</div>
+                        <p>Comprehensive certification covering modern web development technologies, frameworks, and best practices for building full-stack applications.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-title">Node.js Development</div>
+                        <div class="timeline-subtitle">Udemy</div>
+                        <p>Advanced Node.js course covering server-side JavaScript, Express.js framework, database integration, and RESTful API development.</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-title">React.js Development</div>
+                        <div class="timeline-subtitle">LinkedIn Learning</div>
+                        <p>Specialized certification in React.js development including component architecture, state management, hooks, and modern React patterns.</p>
+                    </div>
+                </section>
+                
+                <!-- Volunteering Section -->
+                <section id="volunteering" class="content-section">
+                    <h2 class="section-title">$ grep -r "community" ./activities/</h2>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-title">IT Quiz Competition Volunteer</div>
+                        <div class="timeline-subtitle">Christ Academy for Advanced Studies, Bengaluru</div>
+                        <p style="color: var(--text-secondary); margin-bottom: 10px;">IT Fest Volunteering</p>
+                        <p>Actively volunteered in organizing and managing IT Quiz competitions during college fest. Assisted in coordinating technical events, managing participants, and ensuring smooth conduct of competitions. Demonstrated leadership and organizational skills while contributing to the college community.</p>
+                    </div>
+                </section>
+                
+                <!-- Interests Section -->
+                <section id="interests" class="content-section">
+                    <h2 class="section-title">$ ./interests.sh</h2>
+                    <div class="interests-container">
+                        <span class="interest-tag">Technical Workshops</span>
+                        <span class="interest-tag">Coding</span>
+                        <span class="interest-tag">Technical Quiz</span>
+                    </div>
+                </section>
+                
+                <!-- Languages Section -->
+                <section id="languages" class="content-section">
+                    <h2 class="section-title">$ echo $LANG</h2>
+                    <div class="languages-container">
+                        <span class="language-tag">Hindi</span>
+                        <span class="language-tag">English</span>
+                        <span class="language-tag">Tamil</span>
+                        <span class="language-tag">Telugu</span>
+                        <span class="language-tag">Kannada</span>
+                        <span class="language-tag">Malayalam</span>
+                    </div>
+                </section>
+                
+                <!-- Contact Section -->
+                <section id="contact" class="content-section">
+                    <h2 class="section-title">$ ./connect --with adarsh</h2>
+                    
+                    <div class="contact-grid">
+                        <div class="contact-item">
+                            <div class="contact-icon">📧</div>
+                            <a href="mailto:adarshk6678@gmail.com" class="contact-link">adarshk6678@gmail.com</a>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">📱</div>
+                            <a href="tel:+916362162926" class="contact-link">+91 6362162926</a>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">💼</div>
+                            <a href="https://www.linkedin.com/in/adarshk0216" target="_blank" class="contact-link">LinkedIn Profile</a>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">🐙</div>
+                            <a href="https://github.com/adarshk0070" target="_blank" class="contact-link">GitHub Portfolio</a>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">📍</div>
+                            <span class="contact-link">Bengaluru, Karnataka, India</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 40px; padding: 25px; background: rgba(0, 255, 136, 0.05); border-radius: 12px; border: 1px solid var(--border);">
+                        <h3 style="color: var(--accent); margin-bottom: 15px;">Ready to Connect?</h3>
+                        <p>I'm actively seeking opportunities in full-stack development where I can contribute my skills in React.js, Node.js, and modern web technologies. Let's build something amazing together!</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Matrix Rain Effect
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const symbols = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
+        
+        const alphabet = katakana + latin + nums + symbols;
+        
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        
+        const rainDrops = [];
+        
+        for (let x = 0; x < columns; x++) {
+            rainDrops[x] = 1;
+        }
+        
+        const draw = () => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#00ff88';
+            ctx.font = fontSize + 'px monospace';
+            
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        };
+        
+        setInterval(draw, 30);
+        
+        // Responsive adjustments
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Active navigation highlighting
+        const sections = document.querySelectorAll('.content-section');
+        const navItems = document.querySelectorAll('.nav-menu a');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                
+                if (pageYOffset >= sectionTop - 300) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === `#${current}`) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
