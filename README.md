@@ -21,9 +21,7 @@ A modern, terminal-themed portfolio website showcasing my skills, projects, and 
 - JavaScript
 - Git/GitHub
 
-## Live Demo
 
-👉 [View Portfolio](https://adarshk0070.github.io/portfolio-html-css/)
 
 ## Installation (for local development)
 
