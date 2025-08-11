@@ -1,6 +1,6 @@
 # Adarsh K - Portfolio Website
 
-![Portfolio Screenshot](screenshot.png) *(add screenshot later if you want)*
+![Portfolio Screenshot](screenshot.png)
 
 A modern, terminal-themed portfolio website showcasing my skills, projects, and experience as a Full Stack Developer.
 
